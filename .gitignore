@@ -1,0 +1,18 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+*.log
+.DS_Store
+.vscode/
+.idea/
+# Local database clusters/dumps and key material (defensive; none should exist in-tree)
+pgdata/
+*.dump
+*.sql.gz
+*.key
+*.pem
+*.p12
