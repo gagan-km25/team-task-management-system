@@ -27,7 +27,13 @@ A ~10-minute walkthrough of the running system. Start both processes first (comm
 14. Show filters (project / status / priority) updating the table and the count line.
 15. **Overview**: total projects/tasks/completed/pending match the visible data; the overdue panel lists exactly the past-due, not-completed task(s). Log in as Bob → dashboard reflects only his tasks.
 
-## 6. Security highlights (1 min)
+## 5b. Pending registrations (2 min)
+1. In the private window, **register another fresh account** (unique email) → the success message says an Administrator must add the email; signing in yields no workspace access.
+2. As the Administrator, click the **bell icon** (top bar): the panel shows the new account (name, email, registration date, "Pending") and the count badge.
+3. Type in the panel's **search box** to filter by email or name.
+4. Click **Dismiss** on one entry (confirm) → it leaves the list; the count updates; note the account is not deleted (it still cannot sign in — workspace-less).
+5. Click **Add to Team** on the other entry → it moves to the Team members list; refresh the page — the dismissal and membership persist (they are stored in PostgreSQL via migration 0002).
+6. Point out the panel's loading, error-with-retry (stop the backend and open the bell), and empty ("All caught up") states.
 16. In a terminal: `curl http://localhost:8080/api/projects` → 401; with Bob's old token after Ada **removes Bob** from the Team page → 403 "Workspace membership is required"; Bob's next login → 403.
 17. Point out Bob's tasks moved to Ada on removal (Team page + task board) — nothing orphaned.
 

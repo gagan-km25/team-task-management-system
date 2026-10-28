@@ -19,8 +19,10 @@ import (
 
 // defaultTestDBURL is the local development cluster; override with
 // TEST_DATABASE_URL. Tests skip when the database is not reachable so
-// `go test ./...` still passes on machines without PostgreSQL.
-const defaultTestDBURL = "postgres://taskapp:change-this-password@localhost:54329/task_management?sslmode=disable"
+// `go test ./...` still passes on machines without PostgreSQL. The default
+// targets a dedicated test database — never point it at a database holding
+// real data, because the fixture truncates all tables.
+const defaultTestDBURL = "postgres://taskapp:change-this-password@localhost:54329/task_management_tests?sslmode=disable"
 
 func newIntegrationServer(t *testing.T) (*httptest.Server, *store.DB) {
 	t.Helper()
@@ -37,7 +39,7 @@ func newIntegrationServer(t *testing.T) (*httptest.Server, *store.DB) {
 	if err := store.Migrate(ctx, d); err != nil {
 		t.Fatalf("migrate: %v", err)
 	}
-	if _, err := d.Pool.Exec(ctx, `TRUNCATE users, workspaces, workspace_members, projects, tasks RESTART IDENTITY CASCADE`); err != nil {
+	if _, err := d.Pool.Exec(ctx, `TRUNCATE users, workspaces, workspace_members, projects, tasks, dismissed_registrations RESTART IDENTITY CASCADE`); err != nil {
 		t.Fatalf("reset database: %v", err)
 	}
 	cfg := config.Config{Port: "0", DatabaseURL: url, JWTSecret: strings.Repeat("integration-test-secret-", 3), FrontendOrigin: "http://localhost:5173", JWTTTLHours: 1}

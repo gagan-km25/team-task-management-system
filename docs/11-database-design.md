@@ -60,6 +60,16 @@ users 1 ─── n tasks (assigned_user_id)
 | status | TEXT | NOT NULL DEFAULT 'To Do', CHECK in ('To Do','In Progress','Completed') |
 | created_at / updated_at | TIMESTAMPTZ | NOT NULL DEFAULT now() |
 
+### dismissed_registrations
+| Column | Type | Constraints |
+|---|---|---|
+| workspace_id | BIGINT | FK → workspaces ON DELETE CASCADE |
+| user_id | BIGINT | FK → users ON DELETE CASCADE |
+| dismissed_at | TIMESTAMPTZ | NOT NULL DEFAULT now() |
+| — | — | PK (workspace_id, user_id); index on workspace_id |
+
+Added by migration `0002_pending_registration_dismissals` for the admin pending-registrations feature: records which workspace-less accounts an administrator dismissed from **their** list; per-workspace, never deletes accounts.
+
 ### schema_migrations
 `version TEXT PK`, `applied_at TIMESTAMPTZ` — migration ledger written transactionally with each applied file.
 

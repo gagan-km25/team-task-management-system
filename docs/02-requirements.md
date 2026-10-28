@@ -46,6 +46,8 @@ Source of truth: the assignment document (see [01-assignment-overview.md](01-ass
 | 5.3 | Members see summaries based on their assigned tasks | DONE — member queries scoped by `assigned_user_id` |
 
 ## Acceptance criteria (summary)
+Statuses use the scheme PASS / FAIL / PARTIAL / BLOCKED / NOT VERIFIED with evidence in [13-acceptance-checklist.md](13-acceptance-checklist.md). Frontend display behaviors verified at API level and by the user's manual testing (2026-10-29); automated browser testing has not been run.
+
 1. Secure password storage (bcrypt) + JWT auth — **PASS**
 2. Unique, validated emails — **PASS** (UNIQUE constraint + regex + normalization)
 3. Password/confirm must match — **PASS** (frontend check + backend rejection)
@@ -54,12 +56,22 @@ Source of truth: the assignment document (see [01-assignment-overview.md](01-ass
 6. Tasks assigned only to workspace members — **PASS**
 7. Project end date not earlier than start date — **PASS** (app + DB CHECK)
 8. Task due date within project date range — **PASS** (create/edit enforced; reschedules that would strand tasks rejected)
-9. Required fields validated on the frontend — **PASS**
+9. Required fields validated on the frontend — **PARTIAL** (validation logic implemented and exercised in code; automated browser verification not run)
 10. Backend validates incoming data independently — **PASS**
 11. Members cannot modify others' tasks — **PASS**
 12. Project deletion leaves no orphaned tasks — **PASS** (FK ON DELETE CASCADE, verified at DB level)
-13. Search/filter and dashboard counts accurate — **PASS** (verified against seeded data)
-14. Success/failure messages in the frontend — **PASS**
+13. Search/filter and dashboard counts accurate — **PASS** (live-verified against database records 2026-10-28)
+14. Success/failure messages in the frontend — **PARTIAL** (backend error contract verified live; UI rendering verified only by user-reported manual testing, not automation)
 15. PostgreSQL persistence — **PASS** (verified across restart)
+
+## Enhancement requirements (2026-10-28): pending registrations
+| # | Requirement | Status |
+|---|---|---|
+| E1 | New registrations visible to the Administrator without granting access | **PASS** — derived workspace-less list; `GET /api/registrations` |
+| E2 | Notification bell with pending count; details (name, email, date, status) | **PASS** — `BellPanel` in `App.tsx`; count derived from the same query (UI rendering manually verified by user) |
+| E3 | Search by email/name; Add to Team via existing membership API | **PASS** — client-side filter; `POST /api/members` reused |
+| E4 | Per-workspace persistent dismissal; account never deleted; no automatic reappearance | **PASS** — `POST /api/registrations/{id}/dismiss`; migration `0002`; restart-persistence verified |
+| E5 | Admin-only, workspace-scoped; duplicates impossible | **PASS** — `auth`+`admin` middleware; list derived from current data |
+| E6 | Loading, error-with-retry, and empty states | **PASS** (code) / UI rendering — **PARTIAL** (manual only) |
 
 Per-criterion evidence: [13-acceptance-checklist.md](13-acceptance-checklist.md).

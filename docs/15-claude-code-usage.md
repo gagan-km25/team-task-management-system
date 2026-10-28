@@ -8,7 +8,7 @@ The project was developed with **Claude Code** (CLI agent in VS Code), running o
 - **Incremental fixes preserving the starter** — the existing structure (Go module layout, React app, schema) was kept; defects were patched in place rather than rebuilt.
 - **Regression protection** — every fixed defect gained a test (e.g., admin status-only update, member removal reassignment, project reschedule guard).
 - **Environment autonomy within bounds** — installed a user-local Go toolchain and portable PostgreSQL (no admin rights, outside the repo) when the required stack was absent; cleared rebuildable caches when the full disk blocked builds; never touched unrelated user data.
-- **Safety rules honored** — no secrets printed or committed (none present in the project tree); no git commit or push (not authorized, and no Git repository exists); the GLM API key was never exposed or referenced.
+- **Safety rules honored** — no secrets printed or committed (none present in the project tree); no git commit or push (not authorized at the time; the repository was initialized and published afterwards by the user); the GLM API key was never exposed or referenced.
 
 ## Human decisions during the session
 1. Approval was implicit in the initial directives ("proceed without waiting for approval between routine steps"); no mid-course approvals were requested.

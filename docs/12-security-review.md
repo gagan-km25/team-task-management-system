@@ -32,7 +32,7 @@ Reviewed 2026-10-27 against the implemented code. Scope: authentication, authori
 
 ## Secrets and configuration
 - `.env` is git-ignored (`!.env.example` allowed); `.env.example` contains only placeholders. JWT secret is read from the environment; short secrets are rejected at issuance.
-- No secrets are hardcoded in source, tests, or docs. The repository contains no credentials; the dev DB password in `.env.example` is an obvious placeholder (`change-this-password`).
+- No secrets are hardcoded in source, tests, or docs, **with one exception flagged for removal**: the untracked local utility `backend/reset_hash.go` (not imported by the application, preserved per instruction) contains a plaintext password literal used to generate a bcrypt hash — it must be deleted or moved out of the repository before any commit/push, and the affected credential rotated. The repository itself contains no credentials; the dev DB password in `.env.example` is an obvious placeholder (`change-this-password`).
 - The session's external tooling (GLM API key) was never present in project files and is not referenced anywhere.
 
 ## Findings summary

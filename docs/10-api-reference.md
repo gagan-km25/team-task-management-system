@@ -39,6 +39,15 @@ Body: `{"email":"…"}` — exact registered email (normalized). Errors: 400 inv
 ### `DELETE /api/members/{id}` → 200 (Administrator)
 Removes the membership and, in the same transaction, reassigns the member's tasks to the administrator. 400 when targeting self; 404 when not a Member of this workspace. The removed user's existing JWTs stop working on the next request.
 
+## Pending registrations (Administrator)
+Registration never grants workspace access. Accounts without any workspace membership are "pending" and are surfaced to administrators for invitations.
+
+### `GET /api/registrations` → 200 (Administrator)
+`[{"id","name","email","registeredAt","status"},…]` — registered users with no workspace membership, newest first, excluding accounts this workspace has dismissed. The list is derived from current data (no duplicate notifications possible).
+
+### `POST /api/registrations/{id}/dismiss` → 200 (Administrator)
+Hides one pending registration from **this workspace's** list only; idempotent. The user account is never deleted and other workspaces' lists are unaffected. Errors: 404 unknown account, 409 the account is already a workspace member.
+
 ## Projects
 ### `GET /api/projects` → 200 — caller's workspace, newest first.
 ### `POST /api/projects` → 201 (Administrator)

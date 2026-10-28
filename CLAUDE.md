@@ -15,7 +15,7 @@ go test ./...       # integration tests need PostgreSQL; they skip if TEST_DATAB
 go build ./...
 
 # Frontend (cwd frontend/)
-npm ci              # package-lock.json exists in the working tree (no Git repository has been initialized yet)
+npm ci              # package-lock.json exists in the working tree (run inside frontend/)
 npm run build       # tsc -b && vite build
 npm run dev         # Vite dev server (default http://localhost:5173)
 
@@ -25,7 +25,7 @@ psql -p 54329 -U postgres -d task_management -c "…"
 ```
 
 ## Environment
-- Integration tests default `TEST_DATABASE_URL` to `postgres://taskapp:change-this-password@localhost:54329/task_management?sslmode=disable`; override for other setups.
+- Integration tests default `TEST_DATABASE_URL` to `postgres://taskapp:change-this-password@localhost:54329/task_management_tests?sslmode=disable` — a dedicated test database (create once with `CREATE DATABASE task_management_tests OWNER taskapp;`). The fixture truncates all tables: never point it at a database holding real data; tests skip if unreachable.
 - Backend reads `.env` (see `backend/.env.example`); real environment variables win. `JWT_SECRET` must be ≥ 32 chars.
 - The dev PostgreSQL cluster lives in a user-local data directory (this machine: `%USERPROFILE%\tools\pgdata`). If `pg_ctl start` hangs under Git Bash, start `postgres.exe` directly (see `docs/15-claude-code-usage.md`).
 - The system drive is nearly full — check `df -h /c` before large builds.

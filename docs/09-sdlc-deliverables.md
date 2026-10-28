@@ -30,7 +30,7 @@ Where each software-development-lifecycle artifact lives, and the quality gates 
 | `go test ./...` | pass (31 tests / subtests across 2 packages) |
 | `go test -race ./...` | blocked — environment (see [08](08-known-issues.md)) |
 | `go build ./...` | pass |
-| `npm ci` | pass (runs from `package-lock.json`, which exists in the working tree; no Git repository yet) |
+| `npm ci` | pass (runs from `package-lock.json`, which exists in the working tree) |
 | `npm run build` | pass |
 | Live-server E2E | 44/44 pass |
 | DB constraint probes | 8/8 raise expected errors; cascade verified |
@@ -39,4 +39,4 @@ Where each software-development-lifecycle artifact lives, and the quality gates 
 
 ## Change management
 - All changes were made in place on the starter; no rewrite. Each defect fix is paired with a regression test.
-- Git: no repository initialized yet and nothing committed or pushed — the publisher step awaits explicit user authorization (`git init`, initial commit, push to their GitHub remote).
+- Git: the project is a Git repository on branch `main` with `origin` → https://github.com/gagan-km25/team-task-management-system (published 2026-10-27, 1 commit). The 2026-10-28 pending-registration enhancement and documentation updates are local uncommitted working-tree changes — nothing has been committed or pushed since; the publisher step awaits explicit user authorization.

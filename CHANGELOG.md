@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-10-29
+
+### Documentation
+- Final documentation pass across the root README and all `docs/01`–`docs/16` plus `CLAUDE.md`: pending-registration feature documented everywhere relevant; acceptance statuses aligned to the PASS/FAIL/PARTIAL/BLOCKED/NOT VERIFIED scheme (AC9 and AC14 marked PARTIAL — no automated browser evidence; user-reported manual testing recorded separately); stale Git-state and test-database-default claims corrected (`CLAUDE.md`, `docs/09`, `docs/15`); `backend/reset_hash.go` plaintext-password publication risk added to `docs/08` and `docs/12`; sprint/SDLC records extended with the 2026-10-28 sessions; safe `.env` creation instructions added to the README; execution log and prompt log updated.
+- The supplied `README(2).md` was not found in the project — its comparison against the root README is **BLOCKED** pending placement at `docs/README-reference.md`.
+
+## 2026-10-28
+
+### Added
+- **Pending-registration notifications for administrators.** New backend endpoints `GET /api/registrations` and `POST /api/registrations/{id}/dismiss` (admin-only, workspace-scoped): administrators see registered users who have no workspace membership (name, email, registration date, status) behind a notification bell with a live count; "Add to Team" reuses the existing membership API; "Dismiss" hides a registration for that workspace only. Migration `0002_pending_registration_dismissals` adds the `dismissed_registrations` table (additive, forward-only). Existing member removal, revocation, and task-reassignment behavior unchanged.
+- New integration test `TestPendingRegistrations` (9 subtests) + E2E suite `registrations_e2e.py` (19 checks) and restart-persistence check (3 checks).
+
+### Changed
+- Integration tests now default `TEST_DATABASE_URL` to a dedicated `task_management_tests` database (create once with `CREATE DATABASE task_management_tests OWNER taskapp;`) so running the test suite never truncates application data.
+
 ## 2026-10-27
 
 ### Fixed

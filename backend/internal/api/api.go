@@ -29,6 +29,8 @@ func (s *Server) routes() {
 	s.mux.Handle("GET /api/members", s.auth(http.HandlerFunc(s.members)))
 	s.mux.Handle("POST /api/members", s.auth(s.admin(http.HandlerFunc(s.addMember))))
 	s.mux.Handle("DELETE /api/members/{id}", s.auth(s.admin(http.HandlerFunc(s.removeMember))))
+	s.mux.Handle("GET /api/registrations", s.auth(s.admin(http.HandlerFunc(s.registrations))))
+	s.mux.Handle("POST /api/registrations/{id}/dismiss", s.auth(s.admin(http.HandlerFunc(s.dismissRegistration))))
 	s.mux.Handle("GET /api/projects", s.auth(http.HandlerFunc(s.projects)))
 	s.mux.Handle("POST /api/projects", s.auth(s.admin(http.HandlerFunc(s.createProject))))
 	s.mux.Handle("GET /api/projects/{id}", s.auth(http.HandlerFunc(s.getProject)))

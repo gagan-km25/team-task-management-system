@@ -40,3 +40,12 @@ Single-day delivery sprint (2026-10-27) following the mandated milestone order. 
 
 ## Deliberately out of scope (per assignment boundaries)
 - Multi-workspace membership per user; email verification/password reset; refresh tokens; rate limiting; containerization.
+
+## Session 2 — 2026-10-28: pending-registration enhancement ✅
+- Implemented admin pending-registration notifications: derived workspace-less list, bell + count badge, search, Add to Team (reusing `POST /api/members`), per-workspace persistent dismissal (migration `0002_pending_registration_dismissals`), loading/error/empty states.
+- New integration test `TestPendingRegistrations` (8 subtests); live E2E `registrations_e2e.py` 21/21; restart-persistence 3/3; frontend build green; backend restarted from the GitHub clone with migration 0002 applied additively.
+- Ported the enhancement into the GitHub clone working tree (root cause of the missing feature there: the clone was at the pre-enhancement commit `a77da68`).
+
+## Session 3 — 2026-10-28/29: audit + documentation finalization ✅
+- Final requirements audit (live authorization/isolation probes, dashboard-vs-database consistency: exact match on the user's live data).
+- Documentation set reconciled; acceptance statuses aligned to PASS/FAIL/PARTIAL/BLOCKED/NOT VERIFIED; `reset_hash.go` publication risk documented; README(2) reference comparison BLOCKED pending the supplied file.

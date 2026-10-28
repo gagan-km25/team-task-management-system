@@ -13,6 +13,8 @@
 | A8 | As an administrator I edit, reassign, or delete any task, and I can flip any task's status from the task table. | Integration "admin full edit and reassign"; "admin status-only update works" |
 | A9 | As an administrator my dashboard shows total projects, total tasks, completed, pending, and overdue counts for the whole workspace. | Integration "dashboard counts" |
 | A10 | As an administrator I cannot remove my own account. | e2e "admin cannot remove self -> 400" |
+| A11 | As an administrator I see newly registered accounts in a notification-bell panel (name, email, registration date, status) with a count badge, and can search them by email or name. | `TestPendingRegistrations`; live E2E `registrations_e2e.py` (21 checks) |
+| A12 | As an administrator I can add a pending account to my team with one click (Add to Team), or dismiss it — dismissal hides it only for my workspace and never deletes the account. | `TestPendingRegistrations` dismiss/add subtests; restart-persistence checks |
 
 ## Member
 | ID | Story | Verified by |

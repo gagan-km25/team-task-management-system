@@ -143,6 +143,62 @@ func (s *Server) removeMember(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, map[string]string{"message": "Member removed; their tasks were reassigned to you"})
 }
 
+// registrations lists workspace-less accounts ("pending registrations") for the
+// administrator's workspace, newest first, excluding users this workspace has
+// dismissed. The list is derived from current data, so it never contains
+// duplicates and the bell count derived from it always matches.
+func (s *Server) registrations(w http.ResponseWriter, r *http.Request) {
+	i := current(r)
+	rows, err := s.db.Pool.Query(r.Context(), `SELECT u.id,u.name,u.email,u.created_at::date::text FROM users u
+		WHERE NOT EXISTS (SELECT 1 FROM workspace_members wm WHERE wm.user_id=u.id)
+		AND NOT EXISTS (SELECT 1 FROM dismissed_registrations dr WHERE dr.user_id=u.id AND dr.workspace_id=$1)
+		ORDER BY u.created_at DESC,u.id DESC`, i.WorkspaceID)
+	if err != nil {
+		fail(w, 500, "Could not load registrations")
+		return
+	}
+	defer rows.Close()
+	out := []map[string]any{}
+	for rows.Next() {
+		var id int64
+		var name, email, registeredAt string
+		if rows.Scan(&id, &name, &email, &registeredAt) == nil {
+			out = append(out, map[string]any{"id": id, "name": name, "email": email, "registeredAt": registeredAt, "status": "Pending"})
+		}
+	}
+	writeJSON(w, 200, out)
+}
+
+// dismissRegistration hides one pending registration from this workspace's
+// list only. The user account is never deleted, and another workspace's view
+// of the same registration is unaffected.
+func (s *Server) dismissRegistration(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		fail(w, 400, "Invalid registration ID")
+		return
+	}
+	i := current(r)
+	var userExists, isMember bool
+	if err = s.db.Pool.QueryRow(r.Context(), `SELECT EXISTS(SELECT 1 FROM users WHERE id=$1), EXISTS(SELECT 1 FROM workspace_members WHERE user_id=$1)`, id).Scan(&userExists, &isMember); err != nil {
+		fail(w, 500, "Could not dismiss registration")
+		return
+	}
+	if !userExists {
+		fail(w, 404, "Registration not found")
+		return
+	}
+	if isMember {
+		fail(w, 409, "That user is already a workspace member")
+		return
+	}
+	if _, err = s.db.Pool.Exec(r.Context(), `INSERT INTO dismissed_registrations(workspace_id,user_id) VALUES($1,$2) ON CONFLICT DO NOTHING`, i.WorkspaceID, id); err != nil {
+		fail(w, 500, "Could not dismiss registration")
+		return
+	}
+	writeJSON(w, 200, map[string]string{"message": "Registration dismissed"})
+}
+
 type projectInput struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`

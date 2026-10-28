@@ -22,7 +22,7 @@
 - `internal/store` — pgx pool, embedded SQL migrations with a `schema_migrations` ledger, small helpers.
 - `internal/api` — route table (Go 1.22+ method+path patterns), CORS for the configured frontend origin, and handlers:
   - `auth middleware` — verifies the HS256 JWT (algorithm pinned in the key function), then re-reads the caller's **current** workspace membership from the database, so revocation is immediate.
-  - `admin middleware` — role gate for administrator-only routes.
+  - `admin middleware` — role gate for administrator-only routes, including the pending-registration endpoints `GET /api/registrations` and `POST /api/registrations/{id}/dismiss`.
   - Handlers keep every query scoped by `workspace_id` derived from the verified identity, never from client input.
 
 ## Request flow (protected route)
@@ -40,6 +40,7 @@
 Single-page app (`frontend/src/App.tsx`) with:
 - token + user persisted in `localStorage`; auth screen when absent.
 - pages: Overview (dashboard), Projects, My Tasks, Team; filters (project/status/priority + text search); modals for project/task/member forms; notice/error banners; role-gated buttons (writes hidden for members; enforced again server-side).
+- **Administrator notification bell** (`BellPanel` component): count badge derived from `GET /api/registrations`, search by email/name, Add to Team (reuses `POST /api/members`) and Dismiss (`POST /api/registrations/{id}/dismiss`), with loading, error-with-retry, and empty states; refreshed on open and after actions.
 - API base from `VITE_API_URL` (default `http://localhost:8080`); 401 responses clear the session.
 
 ## Migrations
